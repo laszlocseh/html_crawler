@@ -29,16 +29,16 @@ class ClimateAdaptSpider(Spider):
         for url in urls:
             url_parsed = urlparse(url)
             if url_parsed.netloc in self.allowed_domains:
-                yield Request(url)
+                # yield Request(url)
                 loader.add_value('climate_urls', url, MapCompose(str.strip))
             else:
-                ok = True
+                ok = False
                 url_https = url.replace("http:", "https:")
-                # request_https = requests.get(url_https)
-                # if request_https.status_code == 200:
+                request_https = requests.get(url_https)
+                if request_https.status_code == 200:
                 #     request_http = requests.get(url)
                 #     if request_http.status_code == 200 and request_http.content == request_https.content:
-                #         ok = True
+                        ok = True
                 if ok:
                     loader.add_value('http_ok', url_https, MapCompose(str.strip))
                 else:
