@@ -27,7 +27,7 @@ class ClimateLaciSpider(scrapy.Spider):
                 'url_page_source': response.url
             }
         try:
-            next_pages = response.xpath('//@href[substring(., 1, 1) = "/"]').extract()
+            next_pages = response.xpath('//a/@href[substring(., 1, 1) = "/" or substring(., 1, 1) = "."]').extract()
         except NotSupported:
             next_pages = set()
         for page in next_pages:
