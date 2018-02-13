@@ -16,15 +16,17 @@ class ClimateAdaptEasySpider(CrawlSpider):
 
     rules = (
         Rule(LinkExtractor(),
-             callback='parse_item'),
+             callback='parse_item',
+             follow=True),
     )
 
     def parse_item(self, response):
-        loader = ItemLoader(item=HttpsCrawlerItem(), response=response)
-        loader.add_xpath('climate_urls', '//@href[substring(., 1, 5) = "http:"]')
-        # i = dict()
-        # i['href'] = response.xpath('//@href[substring(., 1, 5) = "http:"]').extract()
+        i = dict()
+        iframes = response.xpath('//iframe/@href[substring(., 1, 5) = "http:"]').extract()
+        if iframes:
+            i['href'] = iframes
+            i['url_from'] = response.url
         #i['domain_id'] = response.xpath('//input[@id="sid"]/@value').extract()
         #i['name'] = response.xpath('//div[@id="name"]').extract()
         #i['description'] = response.xpath('//div[@id="description"]').extract()
-        return loader.load_item()
+        return i
