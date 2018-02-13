@@ -35,22 +35,3 @@ class ClimateLaciSpider(scrapy.Spider):
             if url_complete not in self.visited:
                 self.visited.add(url_complete)
                 yield response.follow(page, callback=self.parse)
-
-
-        # for href in pages:
-        #     url = href.extract()
-        #     url_parsed = urlparse(url)
-        #     if url not in self.visited:
-        #         self.visited.add(url)
-        #         if url_parsed.netloc not in self.allowed_domains:
-        #             url_https = url.replace('http:', 'https:')
-        #             request_status_code = requests.get(url_https).status_code
-        #             if request_status_code:
-        #                 yield {
-        #                     'url': url,
-        #                     'url_https': url_https,
-        #                     'status_code': request_status_code,
-        #                     'url_page_source': response.url
-        #                 }
-        #         if url_parsed.netloc in self.allowed_domains:
-        #             yield response.follow(href, callback=self.parse)
