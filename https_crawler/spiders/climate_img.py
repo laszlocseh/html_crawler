@@ -15,11 +15,12 @@ class ClimateLaciSpider(scrapy.Spider):
 
     def parse(self, response):
         try:
-            images = response.xpath('//img/@src[substring(., 1, 5) = "http:"]').extract()
+            images = response.xpath('//img/@src').extract()
         except NotSupported:
             images = set()
 
         for image_url in images:
+            image_url = response.urljoin(image_url)
             image_url_https = image_url.replace('http:', 'https:')
             if image_url_https not in self.img_checked:
                 self.img_checked.add(image_url_https)
