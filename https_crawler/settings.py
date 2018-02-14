@@ -64,9 +64,14 @@ ROBOTSTXT_OBEY = True
 
 # Configure item pipelines
 # See https://doc.scrapy.org/en/latest/topics/item-pipeline.html
-# ITEM_PIPELINES = {
+ITEM_PIPELINES = {
 #    'https_crawler.pipelines.DuplicatesPipeline': 300,
-# }
+    'scrapy.pipelines.images.ImagesPipeline': 1,
+}
+MEDIA_ALLOW_REDIRECTS = True
+IMAGES_STORE = 'downloads/images'
+IMAGES_URLS_FIELD = 'img'
+# IMAGES_RESULT_FIELD = 'image_filename'
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See https://doc.scrapy.org/en/latest/topics/autothrottle.html

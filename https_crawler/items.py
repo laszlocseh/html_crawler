@@ -11,15 +11,8 @@ from scrapy import Item, Field
 class HttpsCrawlerItem(Item):
     # define the fields for your item here like:
     # name = scrapy.Field()
-    climate_urls = Field()
-    http_ok = Field()
-    http_not_ok = Field()
-
+    img = Field()
+    img_https = Field()
+    status_code = Field()
+    url_page_source = Field()
     images = Field()
-    locations = Field()
-
-    url = Field()
-    date = Field()
-    spider = Field()
-    server = Field()
-    project = Field()

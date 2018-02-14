@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
-import scrapy
-from scrapy.exceptions import NotSupported
 import requests
+from scrapy import Spider
+from scrapy.exceptions import NotSupported
 from requests.exceptions import ConnectionError
-from urllib.parse import urlparse, urljoin
+from urllib.parse import urljoin
 
 
-class ClimateLaciSpider(scrapy.Spider):
+class ClimateLaciSpider(Spider):
     name = 'climate-img'
     allowed_domains = ['climate-adapt.eea.europa.eu']
     start_urls = ['http://climate-adapt.eea.europa.eu']
@@ -20,17 +20,17 @@ class ClimateLaciSpider(scrapy.Spider):
             images = set()
 
         for image_url in images:
-            image_url = response.urljoin(image_url)
+            image_url = response.urljoin(image_url.strip())
             image_url_https = image_url.replace('http:', 'https:')
             if image_url_https not in self.img_checked:
                 self.img_checked.add(image_url_https)
                 try:
-                    request_status_code = requests.get(image_url_https).status_code
+                    request_status_code = requests.get(image_url).status_code
                 except ConnectionError:
                     request_status_code = 0
-                if request_status_code != 200:
+                if request_status_code:
                     yield {
-                        'img': image_url,
+                        'img': [image_url],
                         'img_https': image_url_https,
                         'status_code': request_status_code,
                         'url_page_source': response.url
