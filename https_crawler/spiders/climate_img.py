@@ -14,6 +14,12 @@ class ClimateLaciSpider(Spider):
     img_checked = set()
 
     def parse(self, response):
+        """
+            This section is for contracts
+        @url    http://climate-adapt.eea.europa.eu
+        @returns items 259
+        @scrapes img img_https status_code url_page_source
+        """
         try:
             images = response.xpath('//img/@src').extract()
         except NotSupported:

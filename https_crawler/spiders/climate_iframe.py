@@ -18,7 +18,7 @@ class ClimateLaciSpider(scrapy.Spider):
             iframes = set()
 
         for iframe_url in iframes:
-            iframe_url_https = iframe_url.replace('http:', 'https:')
+            iframe_url_https = iframe_url.strip().replace('http:', 'https:')
             request_status_code = requests.get(iframe_url_https).status_code
             yield {
                 'iframe': iframe_url,

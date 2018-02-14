@@ -20,7 +20,7 @@ class ClimateLaciSpider(scrapy.Spider):
             scripts = set()
 
         for script_url in scripts:
-            script_url = response.urljoin(script_url)
+            script_url = response.urljoin(script_url.strip())
             script_url_https = script_url.replace('http:', 'https:')
             if script_url_https not in self.script_checked:
                 self.script_checked.add(script_url_https)
