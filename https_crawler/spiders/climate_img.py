@@ -23,6 +23,17 @@ class ClimateLaciSpider(CrawlSpider):
             url_complete = page
         return url_complete
 
+    def get_status_code(self, url):
+        if url not in self.img_checked:
+            try:
+                request_status_code = requests.get(url).status_code
+            except ConnectionError:
+                request_status_code = 0
+            self.img_checked.update({url: request_status_code})
+        else:
+            request_status_code = self.img_checked.get(url, 0)
+        return request_status_code
+
     def parse(self, response):
         """
             This section is for contracts
@@ -34,20 +45,14 @@ class ClimateLaciSpider(CrawlSpider):
             images = set(response.xpath('//img/@src').extract())
         except NotSupported:
             images = set()
-
         for image_url in images:
+            # get the complete image url
             image_url = self.get_url_complete(image_url, response.url)
             image_url_https = image_url.replace('http:', 'https:')
             img_url_parsed = urlparse(image_url)
+            # only accept images from other domains
             if img_url_parsed.netloc not in self.allowed_domains:
-                if image_url_https not in self.img_checked:
-                    try:
-                        request_status_code = requests.get(image_url).status_code
-                    except ConnectionError:
-                        request_status_code = 0
-                    self.img_checked.update({image_url_https: request_status_code})
-                else:
-                    request_status_code = self.img_checked.get(image_url_https, 0)
+                request_status_code = self.get_status_code(image_url)
                 if request_status_code:
                     yield {
                         'img': [image_url],
@@ -56,9 +61,9 @@ class ClimateLaciSpider(CrawlSpider):
                         'url_page_source': response.url
                     }
         try:
+            # next_pages = response.xpath('//a[not(contains(@href, "@")) and not(contains(@href, "more-events"))]/@href').extract()
             # next_pages = response.xpath('//a/@href[substring(., 1, 1) = "/" or substring(., 1, 1) = "."]').extract()
-            next_pages = response.xpath('//a[not(contains(@href, "@")) and not(contains(@href, "more-events"))]/@href').extract()
-            # next_pages = response.xpath('//a/@href').extract()
+            next_pages = response.xpath('//a/@href').extract()
             next_pages = set(next_pages) - self.visited
         except NotSupported:
             next_pages = set()
