@@ -35,3 +35,4 @@ class ClimateLaciSpider(scrapy.Spider):
             if url_complete not in self.visited:
                 self.visited.add(url_complete)
                 yield response.follow(page, callback=self.parse)
+

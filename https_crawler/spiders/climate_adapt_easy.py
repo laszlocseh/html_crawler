@@ -15,18 +15,23 @@ class ClimateAdaptEasySpider(CrawlSpider):
     start_urls = ['http://climate-adapt.eea.europa.eu/']
 
     rules = (
+        # Rule(LinkExtractor()),
         Rule(LinkExtractor(),
-             callback='parse_item',
-             follow=True),
+             callback='parse_item', follow=True),
     )
+
+    def parse_responses(self, responses):
+        for response in responses:
+            self.parse_item(response)
 
     def parse_item(self, response):
         i = dict()
-        iframes = response.xpath('//iframe/@href[substring(., 1, 5) = "http:"]').extract()
-        if iframes:
-            i['href'] = iframes
-            i['url_from'] = response.url
-        #i['domain_id'] = response.xpath('//input[@id="sid"]/@value').extract()
-        #i['name'] = response.xpath('//div[@id="name"]').extract()
-        #i['description'] = response.xpath('//div[@id="description"]').extract()
+        images = response.xpath('//img/@src').extract()
+        if len(images) > 1:
+            i['img'] = images
+            #i['domain_id'] = response.xpath('//input[@id="sid"]/@value').extract()
+            #i['name'] = response.xpath('//div[@id="name"]').extract()
+            #i['description'] = response.xpath('//div[@id="description"]').extract()
+        else:
+            i['img'] = [images]
         return i
